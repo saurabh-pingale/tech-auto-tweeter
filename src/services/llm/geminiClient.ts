@@ -1,28 +1,38 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { env } from '../../config/env';
 import { LLMPort } from './LLMPort';
+import { env } from '../../config/env';
+import { GEMINI } from '../../constants/constants';
 import { RawItem, SynthesizedTweet } from '../../domain/types';
-
-const SYSTEM_PROMPT = `
-You are a social media assistant. 
-Given a list of short texts about technology (tweets), 
-write ONE concise tweet (2-3 lines, max 260 characters) summarizing the most interesting/latest technology theme(s). 
-- Use plain text (no HTML entities like &amp;).
-- Avoid hashtags and emojis unless essential.
-- Be factual
-`;
 
 export class GeminiClient implements LLMPort {
   private genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
-  private model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  private model = this.genAI.getGenerativeModel({ model: GEMINI.MODEL });
 
   async synthesizeTweet(items: RawItem[]): Promise<SynthesizedTweet> {
     const material = items.map((i, idx) => `${idx + 1}. ${i.text}`).join('\n');
 
-    const prompt = `${SYSTEM_PROMPT}\n\nHere are the items:\n${material}\n\nReturn ONLY the final tweet text.`;
+    const prompt = `${GEMINI.SYSTEM_PROMPT}\n\nHere are the items:\n${material}`;
 
     const res = await this.model.generateContent(prompt);
-    const text = res.response.text().trim();
-    return { text };
+    const raw = res.response.text().trim();
+
+    const jsonStart = raw.indexOf('{');
+    const jsonEnd = raw.lastIndexOf('}');
+    const safe = jsonStart >= 0 && jsonEnd >= 0 ? raw.slice(jsonStart, jsonEnd + 1) : '{}';
+
+    let parsed: any;
+    try {
+      parsed = JSON.parse(safe);
+    } catch (error) {
+      throw new Error(`Gemini returned invalid JSON: ${raw}`)
+    }
+
+    if (!parsed?.tweets || !Array.isArray(parsed.tweets) || parsed.tweets.length === 0) {
+      throw new Error(`Gemini returned no tweets: ${raw}`);
+    }
+
+    const tweets = parsed.tweets.map((tweet: string) => tweet.trim()).filter(Boolean).slice(0, 3);
+
+    return { tweets };
   }
 }

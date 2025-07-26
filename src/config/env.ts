@@ -7,11 +7,16 @@ const schema = z.object({
   TWITTER_APP_SECRET: z.string().optional(),
   TWITTER_ACCESS_TOKEN: z.string().optional(),
   TWITTER_ACCESS_SECRET: z.string().optional(),
-  TWEET_TOPIC: z.string().default('technology'),
+  TELEGRAM_API_ID: z.string().optional(),
+  TELEGRAM_API_HASH: z.string().optional(),
+  TELEGRAM_SESSION: z.string().optional(),
+  FIREBASE_PROJECT_ID: z.string().optional(),
+  FIREBASE_CLIENT_EMAIL: z.string().optional(),
+  FIREBASE_PRIVATE_KEY: z.string().optional(),
   TWEET_MAX_ITEMS: z
-    .string()
-    .transform(Number)
-    .or(z.number())
+  .string()
+  .transform(Number)
+  .or(z.number())
     .default(20)
 });
 
@@ -23,7 +28,13 @@ export const env = {
   TWITTER_APP_SECRET: parsed.TWITTER_APP_SECRET,
   TWITTER_ACCESS_TOKEN: parsed.TWITTER_ACCESS_TOKEN,
   TWITTER_ACCESS_SECRET: parsed.TWITTER_ACCESS_SECRET,
-  TWEET_TOPIC: parsed.TWEET_TOPIC,
+  TELEGRAM_API_ID: parsed.TELEGRAM_API_ID,
+  TELEGRAM_API_HASH: parsed.TELEGRAM_API_HASH,
+  TELEGRAM_SESSION: parsed.TELEGRAM_SESSION,
+  FIREBASE_PROJECT_ID: parsed.FIREBASE_PROJECT_ID,
+  FIREBASE_CLIENT_EMAIL: parsed.FIREBASE_CLIENT_EMAIL,
+  FIREBASE_PRIVATE_KEY: parsed.FIREBASE_PRIVATE_KEY,
+
   TWEET_MAX_ITEMS:
     typeof parsed.TWEET_MAX_ITEMS === 'number'
       ? parsed.TWEET_MAX_ITEMS

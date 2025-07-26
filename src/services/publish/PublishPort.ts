@@ -1,5 +1,5 @@
-import { SynthesizedTweet } from '../../domain/types';
+import { SingleTweet } from '../../domain/types';
 
 export interface PublishPort {
-  publish(tweet: SynthesizedTweet): Promise<void>;
+  publish(tweet: SingleTweet): Promise<void>;
 }

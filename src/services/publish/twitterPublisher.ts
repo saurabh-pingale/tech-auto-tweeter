@@ -1,7 +1,7 @@
-import { PublishPort } from './PublishPort';
-import { SynthesizedTweet } from '../../domain/types';
 import { TwitterApi } from 'twitter-api-v2';
+import { PublishPort } from './PublishPort';
 import { env } from '../../config/env';
+import { SingleTweet } from '../../domain/types';
 
 export class TwitterPublisher implements PublishPort {
   private client: TwitterApi;
@@ -24,7 +24,7 @@ export class TwitterPublisher implements PublishPort {
     });
   }
 
-  async publish(tweet: SynthesizedTweet): Promise<void> {
+  async publish(tweet: SingleTweet): Promise<void> {
     const res = await this.client.v2.tweet(tweet.text);
     console.log('Tweet posted!', 'id:', res.data?.id);
   }

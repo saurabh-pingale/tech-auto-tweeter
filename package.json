@@ -13,9 +13,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google-cloud/firestore": "^7.11.3",
     "@google-cloud/functions-framework": "^4.0.0",
     "@google/generative-ai": "^0.24.1",
+    "axios": "^1.11.0",
     "dotenv": "^17.2.1",
+    "input": "^1.0.1",
+    "telegram": "^2.26.22",
     "twitter-api-v2": "^1.24.0",
     "zod": "^4.0.10"
   },

@@ -7,5 +7,9 @@ export interface RawItem {
 }
 
 export interface SynthesizedTweet {
+  tweets: string[];
+}
+
+export interface SingleTweet {
   text: string;
 }

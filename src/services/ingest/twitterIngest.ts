@@ -2,6 +2,8 @@ import { IngestPort } from './IngestPort';
 import { RawItem } from '../../domain/types';
 import { TwitterApi } from 'twitter-api-v2';
 import { env } from '../../config/env';
+import { SINCE_DATE, TWITTER_ACCOUNTS } from '../../constants/constants';
+import { logger } from '../../utils/logger';
 
 export class TwitterIngest implements IngestPort {
   private client: TwitterApi;
@@ -24,23 +26,34 @@ export class TwitterIngest implements IngestPort {
     });
   }
 
-  async fetchItems(topic: string, limit: number): Promise<RawItem[]> {
-    const query = `${topic} lang:en -is:retweet -is:reply`;
-    
-    const res = await this.client.v2.search(query, {
-      max_results: Math.min(limit, 100),
-      'tweet.fields': ['created_at', 'author_id', 'lang'],
-    });
-
+  async fetchItems(limit: number): Promise<RawItem[]> {
     const out: RawItem[] = [];
-    for await (const tweet of res) {
-      out.push({
-        id: tweet.id,
-        text: tweet.text,
-        author: tweet.author_id,
-        publishedAt: tweet.created_at ?? undefined,
+
+    for (const account of TWITTER_ACCOUNTS) {
+      const user = await this.client.v2.userByUsername(account);
+      if (!user?.data?.id) continue;
+
+      const res = await this.client.v2.userTimeline(user.data.id, {
+        'tweet.fields': ['created_at', 'author_id'],
+        max_results: Math.min(limit, 100),
+        exclude: ['retweets', 'replies']
       });
-      if (out.length >= limit) break;
+
+      let count = 0;
+      for await (const tweet of res.tweets) {
+        if (tweet.created_at && tweet.created_at >= SINCE_DATE) {
+          const item = {
+            id: tweet.id,
+            text: tweet.text,
+            author: account,
+            publishedAt: tweet.created_at,
+          };
+          logger.info(`[Twitter] Fetched tweet:`, item);
+          out.push(item);
+          count++;
+          if (count >= limit) break;
+        }
+      }
     }
 
     return out;
