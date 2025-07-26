@@ -2,3 +2,4 @@
 /dist
 .env
 .telegram_session
+/env.gcf.yaml

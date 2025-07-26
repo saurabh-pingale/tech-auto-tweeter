@@ -17,7 +17,7 @@ export async function handler(): Promise<void> {
   const drafts = new FirestoreDraftStore();
 
   const usecase = new PostOrGenerate([twitterIngest, telegramIngest], llm, publisher, drafts);
-  await usecase.run(env.TWEET_MAX_ITEMS);
+  await usecase.run(Number(env.TWEET_MAX_ITEMS));
 }
 
 if (require.main === module) {
