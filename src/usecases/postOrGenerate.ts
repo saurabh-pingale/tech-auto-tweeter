@@ -44,6 +44,7 @@ export class PostOrGenerate {
 
     logger.info(`Fetched ${allItems.length} items. Sending to Gemini...`);
     const { tweets } = await this.llm.synthesizeTweet(allItems);
+    logger.info(`Generated Tweets: ${tweets} `);
 
     if (!tweets.length) {
       logger.warn('Gemini returned 0 tweets, aborting.');

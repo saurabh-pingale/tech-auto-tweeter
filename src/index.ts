@@ -1,14 +1,17 @@
 import { env } from './config/env';
+import { HackerNewsIngest } from './services/ingest/hackerNewsIngest';
 import { TelegramIngest } from './services/ingest/telegramIngest';
-import { TwitterIngest } from './services/ingest/twitterIngest';
+// import { TwitterIngest } from './services/ingest/twitterIngest';
 import { GeminiClient } from './services/llm/geminiClient';
 import { TwitterPublisher } from './services/publish/twitterPublisher';
 import { FirestoreDraftStore } from './services/storage/firestoreDraftStore';
 import { PostOrGenerate } from './usecases/postOrGenerate';
+import { TELEGRAM_CHANNELS } from './constants/constants';
 
 export async function handler(): Promise<void> {
-  const twitterIngest = new TwitterIngest();
-  const telegramIngest = new TelegramIngest('aipost');
+  // const twitterIngest = new TwitterIngest();
+  const telegramIngest = new TelegramIngest(TELEGRAM_CHANNELS);
+  const newsIngest = new HackerNewsIngest();
 
   const publisher = new TwitterPublisher();
 
@@ -16,7 +19,7 @@ export async function handler(): Promise<void> {
 
   const drafts = new FirestoreDraftStore();
 
-  const usecase = new PostOrGenerate([twitterIngest, telegramIngest], llm, publisher, drafts);
+  const usecase = new PostOrGenerate([telegramIngest, newsIngest], llm, publisher, drafts);
   await usecase.run(Number(env.TWEET_MAX_ITEMS));
 }
 
