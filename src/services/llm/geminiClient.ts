@@ -9,9 +9,9 @@ export class GeminiClient implements LLMPort {
   private model = this.genAI.getGenerativeModel({ model: GEMINI.MODEL });
 
   async synthesizeTweet(items: RawItem[]): Promise<SynthesizedTweet> {
-    const material = items.map((i, idx) => `${idx + 1}. ${i.text}`).join('\n');
+    const content = items.map((i, idx) => `${idx + 1}. ${i.text}`).join('\n');
 
-    const prompt = `${GEMINI.SYSTEM_PROMPT}\n\nHere are the items:\n${material}`;
+    const prompt = `${GEMINI.SYSTEM_PROMPT}\n\nHere are the content:\n${content}`;
 
     const res = await this.model.generateContent(prompt);
     const raw = res.response.text().trim();
