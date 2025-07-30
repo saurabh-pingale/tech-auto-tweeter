@@ -5,6 +5,7 @@ import { DraftStorePort } from '../services/storage/DraftStorePort';
 import { RawItem } from '../domain/types';
 import { cleanText } from '../utils/textCleaner';
 import { logger } from '../utils/logger';
+import { sanitizeTweetText } from '../utils/utils';
 
 export class PostOrGenerate {
   constructor(
@@ -43,7 +44,8 @@ export class PostOrGenerate {
     this.logFetchedItems(allItems);
 
     logger.info(`Fetched ${allItems.length} items. Sending to Gemini...`);
-    const { tweets } = await this.llm.synthesizeTweet(allItems);
+    let { tweets } = await this.llm.synthesizeTweet(allItems);
+    tweets = tweets.map(sanitizeTweetText);
     logger.info(`Generated Tweets: ${tweets} `);
 
     if (!tweets.length) {
