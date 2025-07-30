@@ -25,7 +25,14 @@ export class TwitterPublisher implements PublishPort {
   }
 
   async publish(tweet: SingleTweet): Promise<void> {
-    const res = await this.client.v2.tweet(tweet.text);
-    console.log('Tweet posted!', 'id:', res.data?.id);
+    try {
+      const user = await this.client.currentUser();
+      console.log('Authenticated as:', user.screen_name);
+
+      const res = await this.client.v2.tweet(tweet.text);
+      console.log('Tweet posted!', 'id:', res.data?.id);
+    } catch (error) {
+      console.error('Tweet posting failed:', error);
+    }
   }
 }

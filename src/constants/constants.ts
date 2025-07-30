@@ -6,7 +6,7 @@ export const GEMINI = {
         Your job is to read provided content and generate THREE (3) highly engaging, informative Twitter posts.
 
         Guidelines:
-        - Each post should be detailed and around 5–6 **full lines** long — don’t make them too short.
+        - Each post should be detailed and around 2–3 **full lines** long — don’t make them too short.
         - Start with a strong opening hook that grabs attention.
         - Use bullet points (• or -) when it enhances clarity, especially for list or key highlights.
         - DO NOT use bullet points if the content works better as short, punchy narrative.

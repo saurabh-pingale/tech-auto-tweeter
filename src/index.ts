@@ -1,9 +1,11 @@
 import { env } from './config/env';
 import { HackerNewsIngest } from './services/ingest/hackerNewsIngest';
 import { TelegramIngest } from './services/ingest/telegramIngest';
-// import { TwitterIngest } from './services/ingest/twitterIngest';
+import { TwitterIngest } from './services/ingest/twitterIngest';
 import { GeminiClient } from './services/llm/geminiClient';
 import { TwitterPublisher } from './services/publish/twitterPublisher';
+import { FarcasterPublisher } from './services/publish/farcasterPublisher';
+import { MultiPublisher } from './services/publish/multiPublisher';
 import { FirestoreDraftStore } from './services/storage/firestoreDraftStore';
 import { PostOrGenerate } from './usecases/postOrGenerate';
 import { TELEGRAM_CHANNELS } from './constants/constants';
@@ -13,7 +15,10 @@ export async function handler(): Promise<void> {
   const telegramIngest = new TelegramIngest(TELEGRAM_CHANNELS);
   const newsIngest = new HackerNewsIngest();
 
-  const publisher = new TwitterPublisher();
+  const twitterPublisher = new TwitterPublisher();
+  const farcasterPublisher = new FarcasterPublisher();
+
+  const publisher = new MultiPublisher([twitterPublisher, farcasterPublisher]);
 
   const llm = new GeminiClient();
 
