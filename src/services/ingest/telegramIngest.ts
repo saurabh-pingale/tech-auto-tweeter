@@ -1,6 +1,5 @@
 import { TelegramClient } from "telegram";
 import { StringSession } from "telegram/sessions";
-import fs from "fs";
 import { env } from '../../config/env';
 import { SINCE_DATE } from '../../constants/constants';
 import { RawItem } from '../../domain/types';
@@ -12,14 +11,11 @@ export class TelegramIngest {
     private client: TelegramClient;
 
   constructor(channels: string[] | string) {
-    if (!env.TELEGRAM_API_ID || !env.TELEGRAM_API_HASH) {
-      throw new Error("Missing TELEGRAM_API_ID or TELEGRAM_API_HASH environment variables.");
+    if (!env.TELEGRAM_API_ID || !env.TELEGRAM_API_HASH || !env.TELEGRAM_SESSION) {
+      throw new Error("Missing required TELEGRAM env variables.");
     }
 
-    const sessionPath = ".telegram_session";
-    const sessionString = fs.existsSync(sessionPath)
-      ? fs.readFileSync(sessionPath, "utf8")
-      : (env.TELEGRAM_SESSION || "");
+    const sessionString = env.TELEGRAM_SESSION;
 
     this.channels = Array.isArray(channels) ? channels : [channels];
     this.client = new TelegramClient( 
@@ -33,14 +29,8 @@ export class TelegramIngest {
   async init() {
     if (this.client.disconnected) {
       await this.client.connect();
-      this.saveSession();
+      logger.info("[Telegram] Session loaded and client connected.");
     }
-  }
-
-  private saveSession() {
-    const updatedSession = (this.client.session as StringSession).save();
-    fs.writeFileSync(".telegram_session", updatedSession, "utf8");
-    logger.info("[Telegram] Session updated and saved to .telegram_session");
   }
 
   async fetchItems(limit = 10): Promise<RawItem[]> {

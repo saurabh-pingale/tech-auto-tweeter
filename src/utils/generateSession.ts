@@ -32,5 +32,6 @@ import { env } from "../config/env";
   const sessionString = (client.session as StringSession).save();
   fs.writeFileSync(".telegram_session", sessionString, "utf8");
 
+  console.log("Session string:", sessionString);
   console.log("Login successful! Session saved to .telegram_session");
 })();
