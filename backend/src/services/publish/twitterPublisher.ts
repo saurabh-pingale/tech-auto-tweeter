@@ -6,33 +6,29 @@ import { SingleTweet } from '../../domain/types';
 export class TwitterPublisher implements PublishPort {
   private client: TwitterApi;
 
-  constructor() {
-    if (
-      !env.TWITTER_APP_KEY ||
-      !env.TWITTER_APP_SECRET ||
-      !env.TWITTER_ACCESS_TOKEN ||
-      !env.TWITTER_ACCESS_SECRET
-    ) {
+  constructor(accessToken: string, accessSecret: string) {
+    if ( !env.TWITTER_APP_KEY || !env.TWITTER_APP_SECRET ) {
       throw new Error('Twitter credentials missing. Check your .env');
     }
 
     this.client = new TwitterApi({
       appKey: env.TWITTER_APP_KEY,
       appSecret: env.TWITTER_APP_SECRET,
-      accessToken: env.TWITTER_ACCESS_TOKEN,
-      accessSecret: env.TWITTER_ACCESS_SECRET
+      accessToken: accessToken,
+      accessSecret: accessSecret
     });
   }
 
   async publish(tweet: SingleTweet): Promise<void> {
     try {
-      const user = await this.client.currentUser();
-      console.log('Authenticated as:', user.screen_name);
+      const user = await this.client.v2.me();
+      console.log('Authenticated as:', user.data.username);
 
       const res = await this.client.v2.tweet(tweet.text);
       console.log('Tweet posted!', 'id:', res.data?.id);
     } catch (error) {
       console.error('Tweet posting failed:', error);
+      throw error;
     }
   }
 }

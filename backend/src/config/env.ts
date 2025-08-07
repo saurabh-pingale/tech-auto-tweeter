@@ -16,6 +16,7 @@ const schema = z.object({
   FIREBASE_PROJECT_ID: z.string().optional(),
   FIREBASE_CLIENT_EMAIL: z.string().optional(),
   FIREBASE_PRIVATE_KEY: z.string().optional(),
+  MONGODB_URI: z.string().optional(),
   TWEET_MAX_ITEMS: z
   .string()
   .transform(Number)
@@ -40,7 +41,7 @@ export const env = {
   FIREBASE_PROJECT_ID: parsed.FIREBASE_PROJECT_ID,
   FIREBASE_CLIENT_EMAIL: parsed.FIREBASE_CLIENT_EMAIL,
   FIREBASE_PRIVATE_KEY: parsed.FIREBASE_PRIVATE_KEY,
-
+  MONGODB_URI: parsed.MONGODB_URI,
   TWEET_MAX_ITEMS:
     typeof parsed.TWEET_MAX_ITEMS === 'number'
       ? parsed.TWEET_MAX_ITEMS
