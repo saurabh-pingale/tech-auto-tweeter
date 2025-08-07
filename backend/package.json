@@ -1,0 +1,38 @@
+{
+  "name": "tech-auto-tweeter",
+  "version": "1.0.0",
+  "main": "dist/cloudFunction.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "build": "tsc",
+    "start": "functions-framework --target=pubsubHandler --signature-type=event",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@google-cloud/firestore": "^7.11.3",
+    "@google-cloud/functions-framework": "^4.0.0",
+    "@google/generative-ai": "^0.24.1",
+    "axios": "^1.11.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^4.19.2",
+    "input": "^1.0.1",
+    "mongodb": "^6.18.0",
+    "telegram": "^2.26.22",
+    "twitter-api-v2": "^1.24.0",
+    "zod": "^4.0.10"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^24.1.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
+  }
+}
