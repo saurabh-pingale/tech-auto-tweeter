@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     
     const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || '';
 
-    if (!oauth_token || !oauth_verifier || !cookie_oauth_token || !oauth_token_secret || oauth_token !== cookie_oauth_token) {
+    if (!(oauth_token && oauth_verifier && cookie_oauth_token && oauth_token_secret && oauth_token === cookie_oauth_token)) {
         return NextResponse.redirect(`${frontendUrl}/login?error=auth-failed`);
     }
 
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
             accessSecret,
         };
 
-        await User.findByIdAndUpdate(userId, userData, { upsert: true, new: true });
+        await User.findByIdAndUpdate(userId, userData, { upsert: true });
 
         const response = NextResponse.redirect(`${frontendUrl}/dashboard?userId=${userId}`);
 

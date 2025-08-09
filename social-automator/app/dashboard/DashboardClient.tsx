@@ -22,6 +22,20 @@ export default function DashboardClient() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
+    const fetchUser = async (userId: string) => {
+        try {
+            const response = await api.get(`/api/user?userId=${userId}`);
+            setUser(response.data);
+            localStorage.setItem('twitterUserId', userId);
+        } catch (err) {
+            console.error("Failed to fetch user data", err);
+            setError("Could not retrieve your profile. Please try logging in again.");
+            localStorage.removeItem('twitterUserId');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         const userId = searchParams.get('userId');
 
@@ -32,21 +46,7 @@ export default function DashboardClient() {
             return;
         }
 
-        const fetchUser = async () => {
-            try {
-                const response = await api.get(`/api/me?userId=${userId}`);
-                setUser(response.data);
-                localStorage.setItem('twitterUserId', userId);
-            } catch (err) {
-                console.error("Failed to fetch user data", err);
-                setError("Could not retrieve your profile. Please try logging in again.");
-                localStorage.removeItem('twitterUserId');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchUser();
+        fetchUser(userId);
     }, [searchParams, router]);
 
     const handleLogout = () => {

@@ -4,7 +4,7 @@ import { TwitterApi } from 'twitter-api-v2';
 export async function POST() {
     const { TWITTER_APP_KEY, TWITTER_APP_SECRET, TWITTER_CALLBACK_URL } = process.env;
 
-    if (!TWITTER_APP_KEY || !TWITTER_APP_SECRET || !TWITTER_CALLBACK_URL) {
+    if (!(TWITTER_APP_KEY && TWITTER_APP_SECRET && TWITTER_CALLBACK_URL)) {
         return NextResponse.json({ message: "Server configuration error." }, { status: 500 });
     }
 

@@ -4,12 +4,10 @@ import { Twitter } from 'lucide-react';
 import { api } from '@/lib/api';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
 
     const handleLogin = async () => {
         setIsLoading(true);
